@@ -76,20 +76,40 @@ func starOne(lines []string) {
 		for m := 1; m <= magnitude; m++ {
 			head_coords[axis] += direction
 			if !isAdjacent(head_coords, tail_coords) {
+				// cur_coords := rope_coords[i]
+				// prev_coords := rope_coords[i-1]
 
-				var opposite int
+				if head_coords[0] == tail_coords[0] { // both on x axis
+					if tail_coords[1] > head_coords[1] {
+						tail_coords[1]--
+					} else {
+						tail_coords[1]++
+					}
+				} else if head_coords[1] == tail_coords[1] { // both on y axis
+					if tail_coords[0] > head_coords[0] {
+						tail_coords[0]--
+					} else {
+						tail_coords[0]++
+					}
+				} else if head_coords[0] > tail_coords[0] { // right
 
-				if axis == 0 {
-					opposite = 1
+					if head_coords[1] > tail_coords[1] { // upper right
+						tail_coords[0]++
+						tail_coords[1]++
+					} else { //lower right
+						tail_coords[0]++
+						tail_coords[1]--
+					}
+				} else if head_coords[0] < tail_coords[0] { // left
+					if head_coords[1] > tail_coords[1] { // upper left
+						tail_coords[0]--
+						tail_coords[1]++
+					} else { //lower left
+						tail_coords[0]--
+						tail_coords[1]--
+					}
 				} else {
-					opposite = 0
-				}
-
-				if tail_coords[opposite] == head_coords[opposite] { // both on same axis
-					tail_coords[axis] += direction
-				} else {
-					tail_coords[opposite] = head_coords[opposite]
-					tail_coords[axis] += direction
+					log.Fatal("this shouldn't happen")
 				}
 
 				v := fmt.Sprintf("%d,%d", tail_coords[0], tail_coords[1])
@@ -188,17 +208,25 @@ func starTwo(lines []string) {
 						} else {
 							cur_coords[0]++
 						}
-					} else {
-						x_diff := prev_coords[0] - cur_coords[0]
-						y_diff := prev_coords[1] - cur_coords[1]
+					} else if prev_coords[0] > cur_coords[0] { // right
 
-						if abs(x_diff) > abs(y_diff) {
-							cur_coords[1] += y_diff
-							cur_coords[0] += sign(x_diff)
-						} else {
-							cur_coords[0] += x_diff
-							cur_coords[1] += sign(y_diff)
+						if prev_coords[1] > cur_coords[1] { // upper right
+							cur_coords[0]++
+							cur_coords[1]++
+						} else { //lower right
+							cur_coords[0]++
+							cur_coords[1]--
 						}
+					} else if prev_coords[0] < cur_coords[0] { // left
+						if prev_coords[1] > cur_coords[1] { // upper left
+							cur_coords[0]--
+							cur_coords[1]++
+						} else { //lower left
+							cur_coords[0]--
+							cur_coords[1]--
+						}
+					} else {
+						log.Fatal("this shouldn't happen")
 					}
 				}
 
